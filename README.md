@@ -4,6 +4,7 @@ PHP Technical Aptitude Test
 System Requirement
     PHP 8.2.12 & above
     Composer 2.8.5
+    MariaDB 10.4.32
 
 Run the project from local server
 1. Install composer dependencies

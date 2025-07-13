@@ -2,11 +2,14 @@
 
 namespace SimpleFaqSystem\Controllers;
 
+use SimpleFaqSystem\Http\Request;
 use SimpleFaqSystem\Http\Response;
 
 abstract class AbstractController
 {
     
+    protected ?Request $request = null;
+
     public function render(string $view, array $data = []): Response
     { 
 
@@ -23,5 +26,10 @@ abstract class AbstractController
 
         // $content = "Rendering view: $view with data: " . json_encode($data);
         return new Response($content);
+    }
+
+    public function setRequest($request)
+    {
+        $this->request = $request;
     }
 }

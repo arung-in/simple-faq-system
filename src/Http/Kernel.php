@@ -4,9 +4,22 @@ namespace SimpleFaqSystem\Http;
 
 use function FastRoute\simpleDispatcher;
 use FastRoute\RouteCollector;
+use SimpleFaqSystem\Controllers\AbstractController;
+use SimpleFaqSystem\Database\Connection;
+use FastRoute\Dispatcher;
 
 class Kernel
 {
+
+    protected ?Connection $connection = null;
+
+    public function __construct()
+    {
+        $config = include BASE_PATH . '/database/config.php';
+        $this->connection = Connection::getInstance ($config['database']);
+            
+    }
+
     public function handle(Request $request): Response
     {
         
@@ -26,8 +39,23 @@ class Kernel
 
         
         $routerInfo = $dispatcher->dispatch($request->getMethod(), $request->getUri());
+        if ($routerInfo[0] === Dispatcher::NOT_FOUND) {
+            return new Response('Not Found', 404);
+        } elseif ($routerInfo[0] === Dispatcher::METHOD_NOT_ALLOWED) {
+            return new Response('Method Not Allowed', 405);
+        }
         [$status, [$controller, $method], $vars] = $routerInfo;        
         
-        return call_user_func_array([new $controller, $method], $vars);
+        $controller = new $controller;
+        
+        if($controller instanceof AbstractController) {
+            $controller->setRequest($request);
+        }
+
+        foreach ($vars as $key => $value) {
+            $request->setAttribute($key, $value);
+        }
+
+        return call_user_func_array([$controller, $method], $vars);
     }
 }
