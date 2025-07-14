@@ -2,6 +2,8 @@
 
 namespace SimpleFaqSystem\Http;
 
+use SimpleFaqSystem\Services\CsrfService;
+
 class Request
 {
 
@@ -52,54 +54,21 @@ class Request
         return $uri;
         // return parse_url($this->server['REQUEST_URI'] ?? '/', PHP_URL_PATH);
     }
-    
-    // public function get(string $key, $default = null)
-    // {
-    //     return $this->get[$key] ?? $default;
-    // }
-    
-    // public function post(string $key, $default = null)
-    // {
-    //     return $this->post[$key] ?? $default;
-    // }
-    
-    // public function input(string $key, $default = null)
-    // {
-    //     return $this->input[$key] ?? $default;
-    // }
-    
-    // public function getFaqId(): ?int
-    // {
-    //     // Check all possible sources for faqId
-    //     return $this->get('faqId') 
-    //         ?? $this->post('faqId') 
-    //         ?? $this->input('faqId') 
-    //         ?? null;
-    // }
-    
-    // public function setAttribute(string $key, $value): void
-    // {
-    //     $this->attributes[$key] = $value;
-    // }
-    
-    // public function getAttribute(string $key, $default = null)
-    // {
-    //     return $this->attributes[$key] ?? $default;
-    // }
-
-
-    public function setAttribute(string $key, $value): void
-    {
-        $this->attributes[$key] = $value;
-    }
-
-    public function getAttribute(string $key, $default = null)
-    {
-        return $this->attributes[$key] ?? $default;
-    }
-
+     
     public function input(string $key, $default = null)
     {
         return $this->input[$key] ?? $default;
+    }
+
+    public function getCsrfToken(): ?string
+    {
+        return $this->input('_csrf_token') ?? null;
+    }
+
+    public function validateCsrfToken(CsrfService $csrfService): bool
+    {
+        $token = $this->getCsrfToken();
+        
+        return $token && $csrfService->validateToken($token);
     }
 }

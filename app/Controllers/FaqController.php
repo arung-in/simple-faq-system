@@ -7,11 +7,14 @@ use SimpleFaqSystem\Http\Response;
 use SimpleFaqSystem\Http\Request;
 use App\Models\FaqModel;
 use LDAP\Result;
+use SimpleFaqSystem\Services\CsrfService;
 
 class FaqController extends AbstractController
 {
     public function index(): Response
     {
+        $csrfService = new CsrfService();
+        $csrftoken = $csrfService->generateToken();
  
         $faqModel = new FaqModel();
         $faqs = $faqModel->getAllFaqs(); 
@@ -19,6 +22,7 @@ class FaqController extends AbstractController
         $data = [
             'title' => 'Simple FAQ System MVC framework - Welcomes you',
             'faqs' => $faqs,
+            'csrfToken' => $csrftoken
         ];
     
         return $this->render('home', $data );

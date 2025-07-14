@@ -40,6 +40,7 @@
                 <div class="faq-item" data-faq-id="<?= $faq['id'] ?>">
                     <h3><?= $faq['title'] ?></h3>
                     <p><?= $faq['content'] ?></p>
+                    <!-- <p><?= $csrfToken ?></p> -->
                     <button class="like-btn" onclick="likeFAQ(<?= $faq['id'] ?>)">
                         👍 <span class="like-count"><?= $faq['likes_count'] ?></span>
                     </button>
@@ -52,12 +53,16 @@
 
     <script>
         function likeFAQ(faqId) {
+            const csrfToken = "<?= $csrfToken ?? '' ?>";
             fetch('/faqs-api/like', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ faqId: faqId })
+                body: JSON.stringify({ 
+                    faqId: faqId,
+                    _csrf_token: csrfToken
+                })
             })
             .then(response => response.json())
             .then(data => {
