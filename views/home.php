@@ -52,7 +52,14 @@
     </div>
 
     <script>
-        function likeFAQ(faqId) {
+        function likeFAQ(faqId) { 
+            if (!Number.isInteger(faqId)) {
+                faqId = Number(faqId);
+                if (!Number.isInteger(faqId)) {
+                    alert("Invalid FAQ ID. Must be an integer.");
+                    return;
+                }
+            }
             const csrfToken = "<?= $csrfToken ?? '' ?>";
             fetch('/faqs-api/like', {
                 method: 'POST',

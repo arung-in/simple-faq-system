@@ -31,7 +31,9 @@ class CsrfService
             session_start();
         }
         
+        
         if (empty($_SESSION[$this->sessionKey])) {
+            // api call request verification
             return false;
         }
         

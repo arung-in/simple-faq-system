@@ -12,8 +12,13 @@ class Connection
     public function __construct(array $config)
     {
         $dsn = 'mysql:host=' . $config['host'] . ';port=' . $config['port'] . ';dbname=' . $config['name'] . ';charset=utf8';
-        $this->pdo = new PDO($dsn, $config['username'], $config['password']);
-        // $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        try {
+            $this->pdo = new PDO($dsn, $config['username'], $config['password']);
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (\PDOException $e) {
+            dd('Database connection failed: Please check your database configuration.');
+            // throw new \RuntimeException('Database connection failed: ' . $e->getMessage());
+        }
     } 
 
     public static function getInstance(array $config): static

@@ -44,6 +44,18 @@ class FaqController extends AbstractController
             );
         }
 
+        if (!is_numeric($faqId) || (int)$faqId != $faqId) {
+            
+            return new Response(
+                json_encode(['success' => false, 'message' => 'Invalid FAQ ID. Must be a valid integer.']),
+                400,
+                ['Content-Type' => 'application/json']
+            );
+ 
+        }
+        
+        
+
         
         $faqModel = new FaqModel();
         try {
