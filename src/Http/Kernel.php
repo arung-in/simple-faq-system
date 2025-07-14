@@ -37,23 +37,19 @@ class Kernel
 
         });
 
-        
         $routerInfo = $dispatcher->dispatch($request->getMethod(), $request->getUri());
         if ($routerInfo[0] === Dispatcher::NOT_FOUND) {
             return new Response('Not Found', 404);
         } elseif ($routerInfo[0] === Dispatcher::METHOD_NOT_ALLOWED) {
             return new Response('Method Not Allowed', 405);
         }
+
         [$status, [$controller, $method], $vars] = $routerInfo;        
         
         $controller = new $controller;
         
         if($controller instanceof AbstractController) {
             $controller->setRequest($request);
-        }
-
-        foreach ($vars as $key => $value) {
-            $request->setAttribute($key, $value);
         }
 
         return call_user_func_array([$controller, $method], $vars);

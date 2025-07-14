@@ -67,8 +67,6 @@
                     if (likeCountElement) {
                         likeCountElement.textContent = data.newCount;
                     }
-                } else {
-                    alert(data.message || 'You already liked this FAQ');
                 }
             })
             .catch(error => {

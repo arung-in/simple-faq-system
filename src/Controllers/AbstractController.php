@@ -28,7 +28,7 @@ abstract class AbstractController
         return new Response($content);
     }
 
-    public function setRequest($request)
+    public function setRequest(Request $request)
     {
         $this->request = $request;
     }

@@ -27,4 +27,18 @@ class FaqModel
         $stmt->execute(['id' => $id]);
         return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
     }
+
+    public function incrementLikeCount(int $id): bool
+    {
+        $stmt = $this->connection->pdo->prepare("UPDATE faqs SET likes_count = likes_count + 1 WHERE id = :id");
+        return $stmt->execute(['id' => $id]);
+    }
+
+    public function getLikeCount(int $id): int
+    {
+        $stmt = $this->connection->pdo->prepare("SELECT likes_count FROM faqs WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result ? (int)$result['likes_count'] : 0;
+    }
 }

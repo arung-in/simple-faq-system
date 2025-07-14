@@ -25,9 +25,12 @@ class FaqController extends AbstractController
         
     }
 
-    public function faqLike(Request $request) : Response
+    public function faqLike() : Response
     {
-        $faqId = $request->getAttribute('faqId') ?? $request->input('faqId');
+        
+        
+        $faqId = $this->request->input('faqId');
+        
         if (!$faqId) {
         
             return new Response(
@@ -37,26 +40,26 @@ class FaqController extends AbstractController
             );
         }
 
-        // Process the like
-    $faqModel = new FaqModel();
-    try {
-        $success = $faqModel->incrementLikeCount((int)$faqId);
         
-        if ($success) {
-            $newCount = $faqModel->getLikeCount((int)$faqId);
+        $faqModel = new FaqModel();
+        try {
+            $success = $faqModel->incrementLikeCount((int)$faqId);            
+            
+            if ($success) {
+                $newCount = $faqModel->getLikeCount((int)$faqId);
+                return new Response(
+                    json_encode(['success' => true, 'newCount' => $newCount]),
+                    200,
+                    ['Content-Type' => 'application/json']
+                );
+            }
+
             return new Response(
-                json_encode(['success' => true, 'newCount' => $newCount]),
-                200,
+                json_encode(['success' => false, 'message' => 'Failed to update like count']),
+                500,
                 ['Content-Type' => 'application/json']
             );
-        }
-        
-        return new Response(
-            json_encode(['success' => false, 'message' => 'Failed to update like count']),
-            500,
-            ['Content-Type' => 'application/json']
-        );
-        
+            
         } catch (\Exception $e) {
             return new Response(
                 json_encode(['success' => false, 'message' => $e->getMessage()]),
@@ -64,15 +67,6 @@ class FaqController extends AbstractController
                 ['Content-Type' => 'application/json']
             );
         }
-
-        // if (!$faqId) {
-        //     $content = "FAQ Like Id not found!" . " FAQ ID: " . $faqId;
-        // } else {
-        //     $content = "FAQ Like updated!" . " FAQ ID: " . $faqId;
-        // }
-
-        
-        // $response = new Response($content);         
-        // return $response;
+  
     }
 }
